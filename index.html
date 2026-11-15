@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111"><meta name="description" content="Memon Electronics World — electronics and accessories">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Memon Electronics World</title>
+<style>
+:root{--bg:#0c0c0d;--panel:#171719;--gold:#e5b94f;--muted:#a7a7aa;--line:#2c2c30}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#101012ed;border-bottom:1px solid var(--line);backdrop-filter:blur(12px);padding:12px 4vw}
+.top{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border:2px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900}.brand{flex:1}.brand b{display:block;letter-spacing:.7px}.brand small{color:var(--muted)}button{cursor:pointer;border:0;font:inherit}.cart{background:var(--gold);color:#17130a;padding:10px 14px;border-radius:12px;font-weight:800}
+main{max-width:1100px;margin:auto;padding:22px 4vw 90px}.hero{background:linear-gradient(120deg,#272016,#111 60%,#30240d);border:1px solid #5b4821;border-radius:22px;padding:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;overflow:hidden}.hero h1{font-size:clamp(27px,5vw,48px);line-height:1.05;margin:8px 0}.gold{color:var(--gold)}.hero p{color:#d0c7b5;max-width:480px}.hero .tag{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:2px}.hero-art{font-size:78px;filter:drop-shadow(0 8px 18px #000);padding:10px}
+.searchrow{display:flex;gap:10px;margin:20px 0}.searchrow input{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;color:white;font:inherit}.searchrow button,.category{background:#242426;color:#eee;border:1px solid var(--line);border-radius:12px;padding:11px 14px}
+h2{font-size:21px;margin:25px 0 13px}.categories{display:flex;gap:9px;overflow:auto;padding-bottom:5px}.category.active{border-color:var(--gold);color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.product{background:var(--panel);border:1px solid var(--line);border-radius:17px;overflow:hidden}.pic{height:130px;background:radial-gradient(circle at 50% 35%,#3b3322,#202022 70%);display:grid;place-items:center;font-size:52px}.info{padding:12px}.info h3{font-size:15px;margin:0 0 6px}.desc{color:var(--muted);font-size:12px;min-height:32px}.price{color:var(--gold);font-weight:850;margin:9px 0}.add{width:100%;padding:10px;border-radius:10px;background:var(--gold);color:#17130a;font-weight:800}
+footer{border-top:1px solid var(--line);padding:22px 4vw;text-align:center;color:var(--muted);font-size:12px}
+.overlay{position:fixed;inset:0;background:#000a;z-index:10;display:none;justify-content:flex-end}.drawer{background:#151517;width:min(440px,100%);height:100%;padding:20px;overflow:auto;border-left:1px solid var(--line)}.drawerhead{display:flex;justify-content:space-between;align-items:center}.close{background:#303034;color:#fff;border-radius:9px;padding:8px 12px}.cartline{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.qty button{background:#333;color:#fff;border-radius:7px;padding:3px 9px}.checkout{width:100%;background:var(--gold);padding:13px;border-radius:12px;font-weight:900;margin-top:14px}.empty{color:var(--muted);padding:30px 0;text-align:center}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pic{height:165px}}@media(min-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.hero-art{font-size:110px}}
+</style></head>
+<body>
+<header><div class="top"><div class="logo">MEW</div><div class="brand"><b>MEMON ELECTRONICS WORLD</b><small>Smart shopping. Trusted tech.</small></div><button class="cart" onclick="openCart()">Cart <span id="count">0</span></button></div></header>
+<main>
+<section class="hero"><div><div class="tag">WELCOME TO MEW</div><h1>Upgrade your<br><span class="gold">everyday tech.</span></h1><p>Explore useful electronics and mobile accessories in one place.</p></div><div class="hero-art">⌁📱</div></section>
+<div class="searchrow"><input id="search" placeholder="Search products..." oninput="render()"><button onclick="document.getElementById('search').value='';render()">Clear</button></div>
+<h2>Shop by category</h2><div class="categories" id="categories"></div>
+<h2>Featured products</h2><div class="grid" id="products"></div>
+</main><footer>© 2026 Memon Electronics World · Demo shopping app</footer>
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeCart()"><section class="drawer"><div class="drawerhead"><h2>Your cart</h2><button class="close" onclick="closeCart()">Close</button></div><div id="cartitems"></div><div id="total"></div><button class="checkout" onclick="checkout()">Place order on WhatsApp</button><p style="color:#aaa;font-size:12px">Demo checkout: confirm product availability and final price with the shop before payment.</p></section></div>
+<script>
+const items=[
+{name:"Wireless Earbuds",cat:"Audio",price:2499,icon:"🎧",desc:"Compact everyday wireless audio"},
+{name:"Fast USB Charger",cat:"Chargers",price:1299,icon:"🔌",desc:"Charging adapter for compatible devices"},
+{name:"Mobile Cover",cat:"Mobile",price:599,icon:"📱",desc:"Protective everyday phone case"},
+{name:"Tempered Glass",cat:"Mobile",price:399,icon:"🛡️",desc:"Screen protection for selected models"},
+{name:"Ring Light",cat:"Lighting",price:1899,icon:"💡",desc:"Light for video calls and content"},
+{name:"Phone Holder",cat:"Accessories",price:799,icon:"📲",desc:"Convenient desk phone stand"},
+{name:"Smart Watch",cat:"Wearables",price:3499,icon:"⌚",desc:"Smart everyday wearable"},
+{name:"Mini Cooling Fan",cat:"Accessories",price:1499,icon:"🌀",desc:"Portable personal cooling fan"},
+{name:"LED Strip Light",cat:"Lighting",price:999,icon:"🌈",desc:"Decorative LED lighting"},
+{name:"Bluetooth Speaker",cat:"Audio",price:2199,icon:"🔊",desc:"Portable music speaker"},
+{name:"Power Bank",cat:"Chargers",price:2999,icon:"🔋",desc:"Portable backup power"},
+{name:"Tripod Stand",cat:"Accessories",price:1599,icon:"📷",desc:"Stable stand for phone recording"}
+];
+let category="All",cart={};
+const cats=["All",...new Set(items.map(x=>x.cat))];
+document.getElementById("categories").innerHTML=cats.map(c=>`<button class="category ${c==="All"?"active":""}" onclick="setCat('${c}',this)">${c}</button>`).join("");
+function setCat(c,el){category=c;document.querySelectorAll(".category").forEach(b=>b.classList.remove("active"));el.classList.add("active");render()}
+function money(n){return "Rs. "+n.toLocaleString("en-PK")}
+function render(){let q=document.getElementById("search").value.toLowerCase();let shown=items.filter(p=>(category==="All"||p.cat===category)&&(p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)));document.getElementById("products").innerHTML=shown.map(p=>`<article class="product"><div class="pic">${p.icon}</div><div class="info"><h3>${p.name}</h3><div class="desc">${p.desc}</div><div class="price">${money(p.price)}</div><button class="add" onclick="add('${p.name}')">Add to cart</button></div></article>`).join("")||'<p class="empty">No products found.</p>'}
+function add(n){cart[n]=(cart[n]||0)+1;updateCart()}
+function updateCart(){let count=Object.values(cart).reduce((a,b)=>a+b,0);document.getElementById("count").textContent=count;let names=Object.keys(cart);document.getElementById("cartitems").innerHTML=names.length?names.map(n=>{let p=items.find(x=>x.name===n);return `<div class="cartline"><div><b>${n}</b><div style="color:#e5b94f">${money(p.price)} × ${cart[n]}</div></div><div class="qty"><button onclick="changeQty('${n}',-1)">−</button> ${cart[n]} <button onclick="changeQty('${n}',1)">+</button></div></div>`}).join(""):'<div class="empty">Your cart is empty.</div>';let total=names.reduce((s,n)=>s+items.find(p=>p.name===n).price*cart[n],0);document.getElementById("total").innerHTML=names.length?`<h3>Total: <span class="gold">${money(total)}</span></h3>`:""}
+function changeQty(n,d){cart[n]+=d;if(cart[n]<=0)delete cart[n];updateCart()}
+function openCart(){document.getElementById("overlay").style.display="flex";updateCart()}function closeCart(){document.getElementById("overlay").style.display="none"}
+function checkout(){let names=Object.keys(cart);if(!names.length){alert("Your cart is empty.");return}let total=names.reduce((s,n)=>s+items.find(p=>p.name===n).price*cart[n],0);let msg="Hello Memon Electronics World! I want to order:\\n"+names.map(n=>n+" x "+cart[n]).join("\\n")+"\\nEstimated total: "+money(total)+"\\nPlease confirm availability.";window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank")}
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+render();updateCart();
+</script></body></html>
